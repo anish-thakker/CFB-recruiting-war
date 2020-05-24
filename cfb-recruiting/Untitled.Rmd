@@ -1,0 +1,15 @@
+---
+title: "CFB-rmarkdown"
+output: html_document
+---
+
+```{r}
+library(shiny)
+library(readr)
+library(rvest)
+library(tidyverse)
+library(data.table)
+library(DT)
+recData<-read_csv("2020.csv") %>%
+        filter(stateProvince=="MD")
+```
