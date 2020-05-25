@@ -27,16 +27,16 @@ ui <- shinyUI(fluidPage(
                                     c("MD" = "MD",
                                       "AL" = "AL",
                                       "CA" = "CA", "NC" = "NC")),
-            selectInput("str", "Stars:",
-                        c("All" = "All",
+            selectInput("str", "Star Rating (according to 247Sports):",
+                        c(
                           "4 stars and higher" = "four",
-                          "3 stars and higher" = "three")),
+                          "3 stars and higher" = "three", "All" = "All")),
             selectInput("pos", "Position:",
                         c("All Positions" = "all", "WR" = "WR",
                           "RB" = "RB",
                           "DT" = "DT")),
             selectInput("yr", "Class:",
-                        c("2002" = "2002",
+                        c("All Years(2002-2020):" = "allYears", "2002" = "2002",
                           "2003" = "2003",
                           "2004" = "2004",
                           "2005" = "2005",
@@ -111,57 +111,64 @@ server <- shinyServer(function(input, output) {
          recruits()$committedTo
      })
      
+     vecFinal<-reactive({
+         na.omit(recruits()$committedTo)
+     })
+     
     var<-reactive({
-        names(sort(table(recruits()$committedTo),decreasing=TRUE))[1]
+        names(sort(table(vecFinal()),decreasing=TRUE))[1]
     })
     
     varnum<-reactive({
-        sort(table(recruits()$committedTo),decreasing=TRUE)[1]
+        sort(table(vecFinal()),decreasing=TRUE)[1]
     })
     
     name1<-reactive({
-        recruits()%>%filter(committedTo == var())
+        tempor<-recruits()%>%filter(committedTo == var())
+        tempor[order(-tempor$rating),]
     })
     
     percent1<-reactive({
-        round(varnum()/length(recruits()$committedTo)*100,digits = 2)
+        round(varnum()/length(vecFinal())*100,digits = 2)
     })
     
     var2<-reactive({
-        names(sort(table(recruits()$committedTo),decreasing=TRUE))[2]
+        names(sort(table(vecFinal()),decreasing=TRUE))[2]
     })
     
     varnum2<-reactive({
-        sort(table(recruits()$committedTo),decreasing=TRUE)[2]
+        sort(table(vecFinal()),decreasing=TRUE)[2]
     })
     
     name2<-reactive({
-        recruits()%>%filter(committedTo == var2())
+        tempor<-recruits()%>%filter(committedTo == var2())
+        tempor[order(-tempor$rating),]
     })
     
     percent2<-reactive({
-        round(varnum2()/length(recruits()$committedTo)*100,digits = 2)
+        round(varnum2()/length(vecFinal())*100,digits = 2)
     })
     
     var3<-reactive({
-        names(sort(table(recruits()$committedTo),decreasing=TRUE))[3]
+        names(sort(table(vecFinal()),decreasing=TRUE))[3]
     })
     
     varnum3<-reactive({
-        sort(table(recruits()$committedTo),decreasing=TRUE)[3]
+        sort(table(vecFinal()),decreasing=TRUE)[3]
     })
     
     name3<-reactive({
-        recruits()%>%filter(committedTo == var3())
+        tempor<-recruits()%>%filter(committedTo == var3())
+        tempor[order(-tempor$rating),]
     })
     
     percent3<-reactive({
-        round(varnum3()/length(recruits()$committedTo)*100,digits = 2)
+        round(varnum3()/length(vecFinal())*100,digits = 2)
     })
     
     output$moreOutput = renderText({
         if(!is.na(varnum())){
-            paste(var(), "-> ",percent1(),"% (",varnum(),"/",length(recruits()$committedTo),")","---- Best Recruit from category: ", name1()[1,4])
+            paste(var(), "-> ",percent1(),"% (",varnum(),"/",length(vecFinal()),")","---- Best Recruit from category: ", name1()[1,4])
         }else{
             paste("No committed recruits in this category")
         }
@@ -169,14 +176,14 @@ server <- shinyServer(function(input, output) {
     
     output$moreOutput2 = renderText({
         if(!is.na(varnum2())){
-            paste(var2(), "-> ",percent2(),"% (",varnum2(),"/",length(recruits()$committedTo),")","---- Best Recruit from category: ", name2()[1,4])
+            paste(var2(), "-> ",percent2(),"% (",varnum2(),"/",length(vecFinal()),")","---- Best Recruit from category: ", name2()[1,4])
         }else{
             paste("No committed recruits in this category")
         }
     })
     output$moreOutput3 = renderText({
         if(!is.na(varnum3())){
-            paste(var3(), "-> ",percent3(),"% (",varnum3(),"/",length(recruits()$committedTo),")","---- Best Recruit from category: ", name3()[1,4])
+            paste(var3(), "-> ",percent3(),"% (",varnum3(),"/",length(vecFinal()),")","---- Best Recruit from category: ", name3()[1,4])
         }else{
             paste("No committed recruits in this category")
         }
