@@ -18,7 +18,7 @@ library(DT)
 ui <- shinyUI(fluidPage(
 
     # Application title
-    titlePanel("Old Faithful Geyser Data"),
+    titlePanel("College Football Recruiting War!"),
 
     # Sidebar with a slider input for number of bins 
     sidebarLayout(
@@ -26,9 +26,13 @@ ui <- shinyUI(fluidPage(
             selectInput("state", "State:",
                                     c("MD" = "MD",
                                       "AL" = "AL",
-                                      "CA" = "CA")),
+                                      "CA" = "CA", "NC" = "NC")),
+            selectInput("str", "Stars:",
+                        c("All" = "All",
+                          "4 stars and higher" = "four",
+                          "3 stars and higher" = "three")),
             selectInput("pos", "Position:",
-                        c("WR" = "WR",
+                        c("All Positions" = "all", "WR" = "WR",
                           "RB" = "RB",
                           "DT" = "DT")),
             selectInput("yr", "Class:",
@@ -56,8 +60,12 @@ ui <- shinyUI(fluidPage(
 
         # Show a plot of the generated distribution
         mainPanel(
-            #DT::dataTableOutput("recruits")
-           textOutput("txtOutput")
+           h3("#1 Recruiting School:"),
+           textOutput("moreOutput"),
+           h3("#2 Recruiting School:"),
+           textOutput("moreOutput2"),
+           h3("#3 Recruiting School:"),
+           textOutput("moreOutput3")
         )
     )
 )
@@ -65,19 +73,120 @@ ui <- shinyUI(fluidPage(
 
 # Define server logic required to draw a histogram
 server <- shinyServer(function(input, output) {
-    output$txtOutput = renderText({
-        recruits<-reactive({
+    temp<-reactive({
+        if(input$pos == "all"){
             csv_add<-paste(input$yr,".csv",sep = "")
             str<-paste("data/", csv_add, sep="")
             read_csv((str)) %>%
-                filter(stateProvince==input$state) %>% 
-                filter(position==input$pos)
-            
-        })
-        paste("The area of the circle is: ", recruits()[1,4])
+                filter(stateProvince==input$state)
+        }else{
+        csv_add<-paste(input$yr,".csv",sep = "")
+        str<-paste("data/", csv_add, sep="")
+        read_csv((str)) %>%
+            filter(stateProvince==input$state) %>% 
+            filter(position==input$pos) 
+        }
+        
+        
     })
     
+    recruits<-reactive({
+        if(input$str == "four"){
+            temp() %>% filter(stars>=4 )
+        }
+        else if(input$str == "three"){
+            temp() %>% filter(stars >= 3)
+        }
+        else{
+            temp()
+        }
+    })
+     output$txtOutput = renderText({
+        
+        #paste("The area of the circle is: ", recruits()[1,4])
+      
+    })
+    
+     vect<-reactive({
+         recruits()$committedTo
+     })
+     
+    var<-reactive({
+        names(sort(table(recruits()$committedTo),decreasing=TRUE))[1]
+    })
+    
+    varnum<-reactive({
+        sort(table(recruits()$committedTo),decreasing=TRUE)[1]
+    })
+    
+    name1<-reactive({
+        recruits()%>%filter(committedTo == var())
+    })
+    
+    percent1<-reactive({
+        round(varnum()/length(recruits()$committedTo)*100,digits = 2)
+    })
+    
+    var2<-reactive({
+        names(sort(table(recruits()$committedTo),decreasing=TRUE))[2]
+    })
+    
+    varnum2<-reactive({
+        sort(table(recruits()$committedTo),decreasing=TRUE)[2]
+    })
+    
+    name2<-reactive({
+        recruits()%>%filter(committedTo == var2())
+    })
+    
+    percent2<-reactive({
+        round(varnum2()/length(recruits()$committedTo)*100,digits = 2)
+    })
+    
+    var3<-reactive({
+        names(sort(table(recruits()$committedTo),decreasing=TRUE))[3]
+    })
+    
+    varnum3<-reactive({
+        sort(table(recruits()$committedTo),decreasing=TRUE)[3]
+    })
+    
+    name3<-reactive({
+        recruits()%>%filter(committedTo == var3())
+    })
+    
+    percent3<-reactive({
+        round(varnum3()/length(recruits()$committedTo)*100,digits = 2)
+    })
+    
+    output$moreOutput = renderText({
+        if(!is.na(varnum())){
+            paste(var(), "-> ",percent1(),"% (",varnum(),"/",length(recruits()$committedTo),")","---- Best Recruit from category: ", name1()[1,4])
+        }else{
+            paste("No committed recruits in this category")
+        }
+        })
+    
+    output$moreOutput2 = renderText({
+        if(!is.na(varnum2())){
+            paste(var2(), "-> ",percent2(),"% (",varnum2(),"/",length(recruits()$committedTo),")","---- Best Recruit from category: ", name2()[1,4])
+        }else{
+            paste("No committed recruits in this category")
+        }
+    })
+    output$moreOutput3 = renderText({
+        if(!is.na(varnum3())){
+            paste(var3(), "-> ",percent3(),"% (",varnum3(),"/",length(recruits()$committedTo),")","---- Best Recruit from category: ", name3()[1,4])
+        }else{
+            paste("No committed recruits in this category")
+        }
+    })
 })
+
+    
+
+    
+    
 
 # Run the application 
 shinyApp(ui = ui, server = server)
