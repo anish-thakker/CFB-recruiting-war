@@ -13,50 +13,156 @@ library(rvest)
 library(tidyverse)
 library(data.table)
 library(DT)
-
+library(shinyWidgets)
+library(shinydashboard)
 # Define UI for application that draws a histogram
 ui <- shinyUI(fluidPage(
 
+    
+    
+    
+    tags$head(
+        tags$style(
+            "
+            .title 
+            {
+                background:url('https://images.unsplash.com/photo-1548029334-8f300bd5ff4b?ixlib=rb-1.2.1&w=1000&q=80');
+                background-repeat: no-repeat;
+                background-size: 5% 90%;
+            }
+            "
+        )
+    ),
+    
+    headerPanel(
+        h1("College Football Recruiting War!", class = "title")
+        
+    ),
+    #setBackgroundColor("#F7DEDB"),
     # Application title
-    titlePanel("College Football Recruiting War!"),
+    #titlePanel("College Football Recruiting War!"),
 
-    # Sidebar with a slider input for number of bins 
+    # Sidebar for inputs
     sidebarLayout(
+        
         sidebarPanel(
+            
             selectInput("state", "State:",
-                                    c("MD" = "MD",
-                                      "AL" = "AL",
-                                      "CA" = "CA", "NC" = "NC")),
+                                    c("Alabama" = "AL",
+                                      "Alaska" = "AK",
+                                      "Arizona" = "AZ",
+                                      "Arkansas" = "AK",
+                                      "California" = "CA",
+                                      "Colorado" = "CO",
+                                      "Connecticut" = "CT",
+                                      "Delaware" = "DE",
+                                      "Distict of Columbia (DC)" = "DC",
+                                      "Florida" = "FL",
+                                      "Georgia" = "GA",
+                                      "Hawaii" = "HI",
+                                      "Idaho" = "ID",
+                                      "Illinois" = "IL",
+                                      "Indiana" = "IN",
+                                      "Iowa" = "IA",
+                                      "Kansas" = "KS",
+                                      "Kentucky" = "KY",
+                                      "Louisiana" = "LA",
+                                      "Maine" = "ME",
+                                      "Maryland" = "MD",
+                                      "Massachusetts" = "MA",
+                                      "Michigan" = "MI",
+                                      "Minnesota" = "MN",
+                                      "Mississippi" = "MS",
+                                      "Missouri" = "MO",
+                                      "Montana" = "MT",
+                                      "Nebraska" = "NE",
+                                      "Nevada" = "NV",
+                                      "New Hampshire" = "NH",
+                                      "New Jersey" = "NJ",
+                                      "New Mexico" = "NM",
+                                      "New York" = "NY",
+                                      "North Carolina" = "NC",
+                                      "North Dakota" = "ND",
+                                      "Ohio" = "OH",
+                                      "Oklahoma" = "OK",
+                                      "Oregon" = "OR",
+                                      "Pennsylvania" = "PA",
+                                      "Rhode Island" = "RI",
+                                      "South Carolina" = "SC",
+                                      "South Dakota" = "SD",
+                                      "Tennessee" = "TN",
+                                      "Texas" = "TX",
+                                      "Utah" = "UT",
+                                      "Vermont" = "VT",
+                                      "Virginia" = "VA",
+                                      "Washington" = "WA",
+                                      "West Virginia" = "WV",
+                                      "Wisconsin" = "WI",
+                                      "Wyoming" = "WY"
+                                      )),
             selectInput("str", "Star Rating (according to 247Sports):",
                         c(
                           "4 stars and higher" = "four",
                           "3 stars and higher" = "three", "All" = "All")),
             selectInput("pos", "Position:",
-                        c("All Positions" = "all", "WR" = "WR",
-                          "RB" = "RB",
-                          "DT" = "DT")),
-            selectInput("yr", "Class:",
-                        c("All Years(2002-2020):" = "allYears", "2002" = "2002",
-                          "2003" = "2003",
-                          "2004" = "2004",
-                          "2005" = "2005",
-                          "2006" = "2006",
-                          "2007" = "2007",
-                          "2008" = "2008",
-                          "2009" = "2009",
-                          "2010" = "2010",
-                          "2011" = "2011",
-                          "2012" = "2012",
-                          "2013" = "2013",
-                          "2014" = "2014",
-                          "2015" = "2015",
-                          "2016" = "2016",
-                          "2017" = "2017",
-                          "2018" = "2018",
-                          "2019" = "2019",
-                          "2020" = "2020"))
-        ),
+                        c("All Positions" = "all", 
+                          "Quarterbacks" = "QB",
+                          "Running Backs" = "RB",
+                          "Wide Receivers" = "WR",
+                          "Tight Ends" = "TE",
+                          "Offensive Lineman" = "OL",
+                          "Defensive Lineman" = "DL",
+                          "Linebackers" = "LB",
+                          "Cornerbacks" = "CB",
+                          "Safeties" = "S",
+                          "Athletes(ATH)" = "ATH",
+                          "Kickers" = "K",
+                          "Punters" = "P")),
+            selectInput("yr", "Starting Class:",
+                        c("2020"=2020,
+                          "2019"=2019,
+                          "2018"=2018,
+                          "2017"=2017,
+                          "2016"=2016,
+                          "2015"=2015,
+                          "2014"=2014,
+                          "2013"=2013,
+                          "2012"=2012,
+                          "2011"=2011,
+                          "2010"=2010,
+                          "2009"=2009,
+                          "2008"=2008,
+                          "2007"=2007,
+                          "2006"=2006,
+                          "2005"=2005,
+                          "2004"=2004,
+                          "2003"=2003,
+                          "2002"=2002
+                        )),
+       
+        selectInput("yr2", "Ending Class:",
+                    c("2020"=2020,
+                      "2019"=2019,
+                      "2018"=2018,
+                      "2017"=2017,
+                      "2016"=2016,
+                      "2015"=2015,
+                      "2014"=2014,
+                      "2013"=2013,
+                      "2012"=2012,
+                      "2011"=2011,
+                      "2010"=2010,
+                      "2009"=2009,
+                      "2008"=2008,
+                      "2007"=2007,
+                      "2006"=2006,
+                      "2005"=2005,
+                      "2004"=2004,
+                      "2003"=2003,
+                      "2002"=2002
+                      ))
     
+        ),
 
         # Show a plot of the generated distribution
         mainPanel(
@@ -65,32 +171,26 @@ ui <- shinyUI(fluidPage(
            h3("#2 Recruiting School:"),
            textOutput("moreOutput2"),
            h3("#3 Recruiting School:"),
-           textOutput("moreOutput3")
+           textOutput("moreOutput3"),
+           setBackgroundImage(src = "www.solidbackgrounds.com/images/1920x1080/1920x1080-red-solid-color-background.jpg", shinydashboard = FALSE)
         )
     )
 )
 )
 
-# Define server logic required to draw a histogram
+# Define server logic
 server <- shinyServer(function(input, output) {
     temp<-reactive({
-        if(input$pos == "all"){
-            csv_add<-paste(input$yr,".csv",sep = "")
-            str<-paste("data/", csv_add, sep="")
-            read_csv((str)) %>%
-                filter(stateProvince==input$state)
-        }else{
         csv_add<-paste(input$yr,".csv",sep = "")
         str<-paste("data/", csv_add, sep="")
-        read_csv((str)) %>%
+        read_csv(("data/allYears.csv")) %>%
             filter(stateProvince==input$state) %>% 
-            filter(position==input$pos) 
-        }
+            filter(year>=input$yr & year <= input$yr2)
         
         
     })
     
-    recruits<-reactive({
+    recruitsTemp<-reactive({
         if(input$str == "four"){
             temp() %>% filter(stars>=4 )
         }
@@ -99,6 +199,49 @@ server <- shinyServer(function(input, output) {
         }
         else{
             temp()
+        }
+    })
+    
+    
+    recruits<-reactive({
+        if(input$pos == "QB"){
+            recruitsTemp()%>%filter(position == "PRO" | position == "DUAL")
+        }
+        else if(input$pos == "RB"){
+            recruitsTemp()%>%filter(position == "APB" | position == "RB" | position == "FB")
+        }
+        else if(input$pos == "WR"){
+            recruitsTemp()%>%filter(position == "WR")
+        }
+        else if(input$pos == "TE"){
+            recruitsTemp()%>%filter(position == "TE")
+        }
+        else if(input$pos == "OL"){
+            recruitsTemp()%>%filter(position == "OT" | position == "OG" | position == "OC")
+        }
+        else if(input$pos == "DL"){
+            recruitsTemp()%>%filter(position == "WDE" | position == "SDE" | position == "DT")
+        }
+        else if(input$pos == "LB"){
+            recruitsTemp()%>%filter(position == "ILB" | position == "OLB")
+        }
+        else if(input$pos == "CB"){
+            recruitsTemp()%>%filter(position == "CB")
+        }
+        else if(input$pos == "S"){
+            recruitsTemp()%>%filter(position == "S")
+        }
+        else if(input$pos == "ATH"){
+            recruitsTemp()%>%filter(position == "ATH")
+        }
+        else if(input$pos == "K"){
+            recruitsTemp()%>%filter(position == "K")
+        }
+        else if(input$pos == "P"){
+            recruitsTemp()%>%filter(position == "P")
+        }
+        else{
+            recruitsTemp()
         }
     })
      output$txtOutput = renderText({
@@ -167,26 +310,36 @@ server <- shinyServer(function(input, output) {
     })
     
     output$moreOutput = renderText({
+        if(input$yr > input$yr2){
+            paste("Starting Class must be less than or equal to Ending Class")
+        }else{
         if(!is.na(varnum())){
             paste(var(), "-> ",percent1(),"% (",varnum(),"/",length(vecFinal()),")","---- Best Recruit from category: ", name1()[1,4])
         }else{
             paste("No committed recruits in this category")
         }
+        }
         })
     
     output$moreOutput2 = renderText({
+        if(input$yr > input$yr2){
+            paste("Starting Class must be less than or equal to Ending Class")
+        }else{
         if(!is.na(varnum2())){
             paste(var2(), "-> ",percent2(),"% (",varnum2(),"/",length(vecFinal()),")","---- Best Recruit from category: ", name2()[1,4])
         }else{
             paste("No committed recruits in this category")
-        }
+        }}
     })
     output$moreOutput3 = renderText({
+        if(input$yr > input$yr2){
+            paste("Starting Class must be less than or equal to Ending Class")
+        }else{
         if(!is.na(varnum3())){
             paste(var3(), "-> ",percent3(),"% (",varnum3(),"/",length(vecFinal()),")","---- Best Recruit from category: ", name3()[1,4])
         }else{
             paste("No committed recruits in this category")
-        }
+        }}
     })
 })
 
