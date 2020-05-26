@@ -7,14 +7,7 @@
 #    http://shiny.rstudio.com/
 #
 
-library(shiny)
-library(readr)
-library(rvest)
-library(tidyverse)
-library(data.table)
-library(DT)
-library(shinyWidgets)
-library(shinydashboard)
+
 # Define UI for application that draws a histogram
 ui <- shinyUI(fluidPage(
     
