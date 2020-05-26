@@ -17,31 +17,19 @@ library(shinyWidgets)
 library(shinydashboard)
 # Define UI for application that draws a histogram
 ui <- shinyUI(fluidPage(
-
     
-    
-    
-    tags$head(
-        tags$style(
-            "
-            .title 
-            {
-                background:url('https://images.unsplash.com/photo-1548029334-8f300bd5ff4b?ixlib=rb-1.2.1&w=1000&q=80');
-                background-repeat: no-repeat;
-                background-size: 5% 90%;
-            }
-            "
-        )
+    setBackgroundImage(
+       src = "background.jpg"
     ),
+    
     
     headerPanel(
-        h1("College Football Recruiting War!", class = "title")
-        
+        h1("College Football Recruiting War!", class = "title"),
     ),
-    #setBackgroundColor("#F7DEDB"),
+   
+    #setBackgroundColor("#def7db"),
     # Application title
     #titlePanel("College Football Recruiting War!"),
-
     # Sidebar for inputs
     sidebarLayout(
         
@@ -163,16 +151,13 @@ ui <- shinyUI(fluidPage(
                       ))
     
         ),
-
-        # Show a plot of the generated distribution
         mainPanel(
            h3("#1 Recruiting School:"),
            textOutput("moreOutput"),
            h3("#2 Recruiting School:"),
            textOutput("moreOutput2"),
            h3("#3 Recruiting School:"),
-           textOutput("moreOutput3"),
-           setBackgroundImage(src = "www.solidbackgrounds.com/images/1920x1080/1920x1080-red-solid-color-background.jpg", shinydashboard = FALSE)
+           textOutput("moreOutput3")
         )
     )
 )
