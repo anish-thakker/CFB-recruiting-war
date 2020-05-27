@@ -6,7 +6,7 @@ Have you ever wondered which schools are the most dominant in certain states whe
 
 Using data from 2002-2020 from 247 Sports, this web app will allow the user to choose a state, position, star rating(according to 247), and a time period. The web app will then tell the user  the top 3 recruiting programs within that category, along with their best recruit from that category.
 
-For example, one can see which schools are the best at recruiting 5-star wide receivers from Texas between 2010 and 2020. Or, one can see which schools recruited the best in Maryland this year amongst 4 star prospects and higher. The possibilities are endless, and provide interesting data about the recruiting process for fans of college football.
+For example, one can see which schools are the best at recruiting 5-star wide receivers from Texas between 2010 and 2020. Or, one can see which schools recruited the best in Maryland this year amongst 4 star prospects and higher. The possibilities are endless, and can provide interesting data about the recruiting process for fans of college football.
 
 # Usage
 Visit this url ---> http://cfb.anishthakker.com/
