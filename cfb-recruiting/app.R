@@ -19,10 +19,9 @@ ui <- shinyUI(fluidPage(
     
     
     headerPanel(
-        h1("College Football Recruiting War!", class = "title"),
+        "College Football Recruiting War!",
     ),
    
-    #setBackgroundColor("#def7db"),
     # Application title
     #titlePanel("College Football Recruiting War!"),
     # Sidebar for inputs
@@ -30,7 +29,7 @@ ui <- shinyUI(fluidPage(
         
         sidebarPanel(
             
-            selectInput("state", "State:",
+            selectInput("state", "Recruiting State:",
                                     c("Alabama" = "AL",
                                       "Alaska" = "AK",
                                       "Arizona" = "AZ",
@@ -85,8 +84,10 @@ ui <- shinyUI(fluidPage(
                                       )),
             selectInput("str", "Star Rating (according to 247Sports):",
                         c(
+                          "All" = "All",
+                          "5 stars only" = "five",
                           "4 stars and higher" = "four",
-                          "3 stars and higher" = "three", "All" = "All")),
+                          "3 stars and higher" = "three")),
             selectInput("pos", "Position:",
                         c("All Positions" = "all", 
                           "Quarterbacks" = "QB",
@@ -177,6 +178,9 @@ server <- shinyServer(function(input, output) {
         else if(input$str == "three"){
             temp() %>% filter(stars >= 3)
         }
+      else if(input$str == "five"){
+        temp() %>% filter(stars == 5)
+      }
         else{
             temp()
         }
@@ -294,9 +298,9 @@ server <- shinyServer(function(input, output) {
             paste("Starting Class must be less than or equal to Ending Class")
         }else{
         if(!is.na(varnum())){
-            paste(var(), "-> ",percent1(),"% (",varnum(),"/",length(vecFinal()),")","---- Best Recruit from category: ", name1()[1,4])
+            paste(var(), "-> ",percent1(),"% (",varnum(),"/",length(vecFinal()),")","---- Best Recruit from ",input$state, " in this category: ", name1()[1,4])
         }else{
-            paste("No committed recruits in this category")
+            paste("No committed recruits in this category from the state of ", input$state)
         }
         }
         })
@@ -306,9 +310,9 @@ server <- shinyServer(function(input, output) {
             paste("Starting Class must be less than or equal to Ending Class")
         }else{
         if(!is.na(varnum2())){
-            paste(var2(), "-> ",percent2(),"% (",varnum2(),"/",length(vecFinal()),")","---- Best Recruit from category: ", name2()[1,4])
+            paste(var2(), "-> ",percent2(),"% (",varnum2(),"/",length(vecFinal()),")","---- Best Recruit from ",input$state, " in this category: ", name2()[1,4])
         }else{
-            paste("No committed recruits in this category")
+          paste("No committed recruits in this category from the state of ", input$state)
         }}
     })
     output$moreOutput3 = renderText({
@@ -316,9 +320,9 @@ server <- shinyServer(function(input, output) {
             paste("Starting Class must be less than or equal to Ending Class")
         }else{
         if(!is.na(varnum3())){
-            paste(var3(), "-> ",percent3(),"% (",varnum3(),"/",length(vecFinal()),")","---- Best Recruit from category: ", name3()[1,4])
+            paste(var3(), "-> ",percent3(),"% (",varnum3(),"/",length(vecFinal()),")","---- Best Recruit from ",input$state, " in this category: ", name3()[1,4])
         }else{
-            paste("No committed recruits in this category")
+          paste("No committed recruits in this category from the state of ", input$state)
         }}
     })
 })
