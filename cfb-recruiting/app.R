@@ -30,7 +30,8 @@ ui <- shinyUI(fluidPage(
             
           #Recruiting state input
             selectInput("state", "Recruiting State:",
-                                    c("Alabama" = "AL",
+                                    c("--Select--" = "select",
+                                      "Alabama" = "AL",
                                       "Alaska" = "AK",
                                       "Arizona" = "AZ",
                                       "Arkansas" = "AK",
@@ -86,6 +87,7 @@ ui <- shinyUI(fluidPage(
             #Star Rating Input
             selectInput("str", "Star Rating (according to 247Sports):",
                         c(
+                          "--Select--" = "select",
                           "All" = "All",
                           "5 stars only" = "five",
                           "4 stars and higher" = "four",
@@ -93,7 +95,9 @@ ui <- shinyUI(fluidPage(
             
             #Position Input
             selectInput("pos", "Position:",
-                        c("All Positions" = "all", 
+                        c(
+                          "--Select--" = "select",
+                          "All Positions" = "all", 
                           "Quarterbacks" = "QB",
                           "Running Backs" = "RB",
                           "Wide Receivers" = "WR",
@@ -109,7 +113,9 @@ ui <- shinyUI(fluidPage(
             
             #Startin Class Input
             selectInput("yr", "Starting Class:",
-                        c("2020"=2020,
+                        c(
+                          "--Select--" = "select",
+                          "2020"=2020,
                           "2019"=2019,
                           "2018"=2018,
                           "2017"=2017,
@@ -132,7 +138,9 @@ ui <- shinyUI(fluidPage(
        
           #Ending Class Input
         selectInput("yr2", "Ending Class:",
-                    c("2020"=2020,
+                    c(
+                      "--Select--" = "select",
+                      "2020"=2020,
                       "2019"=2019,
                       "2018"=2018,
                       "2017"=2017,
@@ -302,9 +310,12 @@ server <- shinyServer(function(input, output) {
     
     output$moreOutput = renderText({
       #Invalid input
-        if(input$yr > input$yr2){
-            paste("Starting Class must be less than or equal to Ending Class")
-        }else{
+      if(input$yr > input$yr2){
+        paste("Starting Class must be less than or equal to Ending Class")
+      }
+      else if(input$state == "select" | input$str =="select" | input$pos == "select" | input$yr  == "select" | input$yr2 == "select"){
+        paste("Please select a state, star rating, position, and time period. These rankings will automatically update!")
+      }else{
         if(!is.na(varnum())){
             paste(var(), "-> ",percent1(),"% (",varnum(),"/",length(vecFinal()),")","---- Best Recruit from ",input$state, " in this category: ", name1()[1,4])
         }else{
@@ -317,7 +328,10 @@ server <- shinyServer(function(input, output) {
       #Invalid input
         if(input$yr > input$yr2){
             paste("Starting Class must be less than or equal to Ending Class")
-        }else{
+        }
+      else if(input$state == "select" | input$str =="select" | input$pos == "select" | input$yr  == "select" | input$yr2 == "select"){
+        paste("Please select a state, star rating, position, and time period. These rankings will automatically update!")
+      }else{
         if(!is.na(varnum2())){
             paste(var2(), "-> ",percent2(),"% (",varnum2(),"/",length(vecFinal()),")","---- Best Recruit from ",input$state, " in this category: ", name2()[1,4])
         }else{
@@ -326,9 +340,12 @@ server <- shinyServer(function(input, output) {
     })
     output$moreOutput3 = renderText({
       #Invalid input
-        if(input$yr > input$yr2){
-            paste("Starting Class must be less than or equal to Ending Class")
-        }else{
+      if(input$yr > input$yr2){
+        paste("Starting Class must be less than or equal to Ending Class")
+      }
+      else if(input$state == "select" | input$str =="select" | input$pos == "select" | input$yr  == "select" | input$yr2 == "select"){
+        paste("Please select a state, star rating, position, and time period. These rankings will automatically update!")
+      }else{
         if(!is.na(varnum3())){
             paste(var3(), "-> ",percent3(),"% (",varnum3(),"/",length(vecFinal()),")","---- Best Recruit from ",input$state, " in this category: ", name3()[1,4])
         }else{
