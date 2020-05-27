@@ -22,13 +22,13 @@ ui <- shinyUI(fluidPage(
         "College Football Recruiting War!",
     ),
    
-    # Application title
-    #titlePanel("College Football Recruiting War!"),
+  
     # Sidebar for inputs
     sidebarLayout(
         
         sidebarPanel(
             
+          #Recruiting state input
             selectInput("state", "Recruiting State:",
                                     c("Alabama" = "AL",
                                       "Alaska" = "AK",
@@ -82,12 +82,16 @@ ui <- shinyUI(fluidPage(
                                       "Wisconsin" = "WI",
                                       "Wyoming" = "WY"
                                       )),
+            
+            #Star Rating Input
             selectInput("str", "Star Rating (according to 247Sports):",
                         c(
                           "All" = "All",
                           "5 stars only" = "five",
                           "4 stars and higher" = "four",
                           "3 stars and higher" = "three")),
+            
+            #Position Input
             selectInput("pos", "Position:",
                         c("All Positions" = "all", 
                           "Quarterbacks" = "QB",
@@ -102,6 +106,8 @@ ui <- shinyUI(fluidPage(
                           "Athletes(ATH)" = "ATH",
                           "Kickers" = "K",
                           "Punters" = "P")),
+            
+            #Startin Class Input
             selectInput("yr", "Starting Class:",
                         c("2020"=2020,
                           "2019"=2019,
@@ -124,6 +130,7 @@ ui <- shinyUI(fluidPage(
                           "2002"=2002
                         )),
        
+          #Ending Class Input
         selectInput("yr2", "Ending Class:",
                     c("2020"=2020,
                       "2019"=2019,
@@ -161,16 +168,19 @@ ui <- shinyUI(fluidPage(
 
 # Define server logic
 server <- shinyServer(function(input, output) {
+  
+  #Loads the csv file with data from all the years
     temp<-reactive({
         csv_add<-paste(input$yr,".csv",sep = "")
         str<-paste("data/", csv_add, sep="")
         read_csv(("data/allYears.csv")) %>%
-            filter(stateProvince==input$state) %>% 
-            filter(year>=input$yr & year <= input$yr2)
+            filter(stateProvince==input$state) %>% #Filters by input state
+            filter(year>=input$yr & year <= input$yr2) #Filters by years greater than start year and less than end year
         
         
     })
     
+    #Handles star rating filtering
     recruitsTemp<-reactive({
         if(input$str == "four"){
             temp() %>% filter(stars>=4 )
@@ -186,7 +196,7 @@ server <- shinyServer(function(input, output) {
         }
     })
     
-    
+    #Handled position filtering
     recruits<-reactive({
         if(input$pos == "QB"){
             recruitsTemp()%>%filter(position == "PRO" | position == "DUAL")
@@ -228,72 +238,70 @@ server <- shinyServer(function(input, output) {
             recruitsTemp()
         }
     })
-     output$txtOutput = renderText({
-        
-        #paste("The area of the circle is: ", recruits()[1,4])
-      
-    })
-    
-     vect<-reactive({
-         recruits()$committedTo
-     })
      
+    #A vector containing the commmitted schools, excluding NA entries(recruits that didn't commit)
      vecFinal<-reactive({
          na.omit(recruits()$committedTo)
      })
      
+     #Retrieves the name of the top 3 schools with the most commits for the query
     var<-reactive({
         names(sort(table(vecFinal()),decreasing=TRUE))[1]
     })
     
+    var2<-reactive({
+      names(sort(table(vecFinal()),decreasing=TRUE))[2]
+    })
+    
+    var3<-reactive({
+      names(sort(table(vecFinal()),decreasing=TRUE))[3]
+    })
+    
+    #Retrievs the number of commits for the top 3 schools retrieved above
     varnum<-reactive({
         sort(table(vecFinal()),decreasing=TRUE)[1]
     })
     
+    varnum2<-reactive({
+      sort(table(vecFinal()),decreasing=TRUE)[2]
+    })
+    
+    varnum3<-reactive({
+      sort(table(vecFinal()),decreasing=TRUE)[3]
+    })
+    
+    #Obtains the name of the best recruit from the best 3 recruiting schools in this query
     name1<-reactive({
         tempor<-recruits()%>%filter(committedTo == var())
         tempor[order(-tempor$rating),]
     })
     
+    name2<-reactive({
+      tempor<-recruits()%>%filter(committedTo == var2())
+      tempor[order(-tempor$rating),]
+    })
+    
+    name3<-reactive({
+      tempor<-recruits()%>%filter(committedTo == var3())
+      tempor[order(-tempor$rating),]
+    })
+    
+    #Obtains the percentage of recruits committed to the top 3 schools in the specified category
     percent1<-reactive({
         round(varnum()/length(vecFinal())*100,digits = 2)
-    })
-    
-    var2<-reactive({
-        names(sort(table(vecFinal()),decreasing=TRUE))[2]
-    })
-    
-    varnum2<-reactive({
-        sort(table(vecFinal()),decreasing=TRUE)[2]
-    })
-    
-    name2<-reactive({
-        tempor<-recruits()%>%filter(committedTo == var2())
-        tempor[order(-tempor$rating),]
     })
     
     percent2<-reactive({
         round(varnum2()/length(vecFinal())*100,digits = 2)
     })
     
-    var3<-reactive({
-        names(sort(table(vecFinal()),decreasing=TRUE))[3]
-    })
-    
-    varnum3<-reactive({
-        sort(table(vecFinal()),decreasing=TRUE)[3]
-    })
-    
-    name3<-reactive({
-        tempor<-recruits()%>%filter(committedTo == var3())
-        tempor[order(-tempor$rating),]
-    })
-    
     percent3<-reactive({
         round(varnum3()/length(vecFinal())*100,digits = 2)
     })
     
+    
     output$moreOutput = renderText({
+      #Invalid input
         if(input$yr > input$yr2){
             paste("Starting Class must be less than or equal to Ending Class")
         }else{
@@ -306,6 +314,7 @@ server <- shinyServer(function(input, output) {
         })
     
     output$moreOutput2 = renderText({
+      #Invalid input
         if(input$yr > input$yr2){
             paste("Starting Class must be less than or equal to Ending Class")
         }else{
@@ -316,6 +325,7 @@ server <- shinyServer(function(input, output) {
         }}
     })
     output$moreOutput3 = renderText({
+      #Invalid input
         if(input$yr > input$yr2){
             paste("Starting Class must be less than or equal to Ending Class")
         }else{
