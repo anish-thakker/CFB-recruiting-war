@@ -14,7 +14,7 @@ Visit this url ---> http://cfb.anishthakker.com/
 Select a state, star rating, position, and time period and the rankings will automatically update!
 
 # Creation
-Web application hosted through AWS using an EC2 instance.
+Web application deployed on AWS using an EC2 instance.
 
 Front end written using Shiny - "an R package that makes it easy to build interactive web apps straight from R."
 
